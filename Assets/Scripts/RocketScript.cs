@@ -19,30 +19,39 @@ public class RocketScript : MonoBehaviour {
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem deathAudioParticles;
+    [SerializeField] Light flameLight;
+
+    [SerializeField] float levelLoadDelay = 2f;
 
     enum State { Alive, Dying, Transcending }
     State state = State.Alive;
     int currentScene;
+    int maxScenes;
+    int firstScene;
+    bool collisionsAreEnabled = true;
 
-    // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
         rocketAudio = GetComponent<AudioSource>();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Update () {
         if (state == State.Alive)
         {
             RespondToThrustInput();
-            Rotate();	
+            Rotate();
+            if (Debug.isDebugBuild)
+            {
+                RespondToDebugKeys();
+            }
+            
         }
         
 	}
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) { return; } // ignoring collisions when dead
+        if (state != State.Alive || !collisionsAreEnabled) { return; }
         switch (collision.gameObject.tag)
         {
             case "Landing":
@@ -57,12 +66,23 @@ public class RocketScript : MonoBehaviour {
         }
     }
 
+    void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextScene();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsAreEnabled = !collisionsAreEnabled;
+        }
+    }
 
     void StartSuccessSequence()
     {
         print("Landing...");
         state = State.Transcending;
-        Invoke("LoadNextScene", 3f);
+        Invoke("LoadNextScene", levelLoadDelay);
         rocketAudio.PlayOneShot(success);
         successParticles.Play();
     }
@@ -71,7 +91,7 @@ public class RocketScript : MonoBehaviour {
     {
         state = State.Dying;
         print("Dead.");
-        Invoke("Death", 2f);
+        Invoke("Death", levelLoadDelay);
         rocketAudio.Stop();
         rocketAudio.PlayOneShot(deathAudio);
         deathAudioParticles.Play();
@@ -80,13 +100,16 @@ public class RocketScript : MonoBehaviour {
     void LoadNextScene()
     {
         currentScene = SceneManager.GetActiveScene().buildIndex;
-        if (currentScene >= 0)
+        maxScenes = SceneManager.sceneCount;
+        firstScene = 0;
+
+        if (currentScene >= firstScene && currentScene != maxScenes)
         {
             SceneManager.LoadScene(currentScene + 1);
         }
         else
         {
-            SceneManager.LoadScene(0); // add menu and put here
+            SceneManager.LoadScene(firstScene); // Add menu
         }
         
     }
@@ -98,7 +121,8 @@ public class RocketScript : MonoBehaviour {
 
     void RespondToThrustInput()
     {
-        if (Input.GetKey(KeyCode.Space))
+        
+        if (Input.GetKeyDown(KeyCode.Space)) // Must repeatedly press space to stay up
         {
             ApplyThrust();
         }
@@ -109,6 +133,7 @@ public class RocketScript : MonoBehaviour {
         else
         {
             mainEngineParticles.Stop();
+            flameLight.enabled = false;
         }
     }
 
@@ -123,6 +148,7 @@ public class RocketScript : MonoBehaviour {
         }
 
         mainEngineParticles.Play();
+        flameLight.enabled = true;
     }
 
     void Rotate()
