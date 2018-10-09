@@ -7,7 +7,7 @@ namespace RocketBooster {
     public class ScoreCounter : MonoBehaviour {
 
         [SerializeField] GameObject textAsset;
-        public int score;
+        public int score = 0;
 
         private void OnTriggerExit(Collider collider)
         {

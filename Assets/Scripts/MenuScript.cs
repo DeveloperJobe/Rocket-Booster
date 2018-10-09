@@ -6,7 +6,7 @@ namespace RocketBooster
     {
 
         // Grab menu, score display and powerup text prefabs
-        [SerializeField] GameObject menuObject, scoreDisplayer, powerupDisplayer;
+        [SerializeField] GameObject menuObject, scoreDisplayer, powerupDisplayer, tutorialText;
 
 
         void Start()
@@ -22,11 +22,13 @@ namespace RocketBooster
                 Time.timeScale = 0f;
                 scoreDisplayer.SetActive(false);
                 powerupDisplayer.SetActive(false);
+                tutorialText.SetActive(false);
             }
             else
             {
                 scoreDisplayer.SetActive(true);
                 powerupDisplayer.SetActive(true);
+                tutorialText.SetActive(true);
             }
         }
 
@@ -35,6 +37,7 @@ namespace RocketBooster
         {
             powerupDisplayer.SetActive(true);
             scoreDisplayer.SetActive(true);
+            tutorialText.SetActive(true);
             menuObject.SetActive(false);
             Time.timeScale = 1f;
         }
