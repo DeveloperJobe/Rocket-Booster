@@ -8,6 +8,8 @@ TagManager:
   - Obstacles
   - Fuel
   - Landing
+  - Score
+  - Powerup
   layers:
   - Default
   - TransparentFX

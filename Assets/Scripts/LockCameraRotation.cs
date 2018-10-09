@@ -22,12 +22,6 @@ public class LockCameraRotation : MonoBehaviour {
 
     void ChangeCameraPosition()
     {
-        cameraPositionY = mainCamera.transform.position.y;
-        cameraPositionX = mainCamera.transform.position.x;
-        newCameraPositionX = rocketShip.transform.position.x + mainCamera.transform.position.x;
-        newCameraPositionY = rocketShip.transform.position.y + mainCamera.transform.position.y;
-        mainCamera.transform.rotation = new Quaternion(0, 0, 0, 0);
-        cameraPositionX = newCameraPositionX;
-        cameraPositionY = newCameraPositionY;
+        mainCamera.transform.position = new Vector3(rocketShip.transform.position.x, rocketShip.transform.position.y, -37f);
     }
 }

@@ -49,11 +49,11 @@ ParticleSystem:
   m_GameObject: {fileID: 1113205305641416}
   serializedVersion: 5
   lengthInSec: 0.1
-  simulationSpeed: 1
+  simulationSpeed: 0
   stopAction: 0
   looping: 1
   prewarm: 0
-  playOnAwake: 0
+  playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
